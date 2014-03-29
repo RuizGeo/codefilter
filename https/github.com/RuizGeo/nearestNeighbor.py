@@ -28,16 +28,19 @@ fimIndex = time.time()
 iter = layer.getFeatures()
 iniGeom = time.time()
 ftr = QgsFeature()
-c =0
+
 for feature in iter:
-    c+=1
+    #Obter propriedades da geometria
     geom = feature.geometry()
+    #Obter coordenadas do ponto
     pt = geom.asPoint()
-    ininearestNeighbor = time.time()
+    #A partir do ponto obter os mais proximos, retorna o ID das colunas
     nearestIds = spIndex.nearestNeighbor(pt,2)
-    ininearestNeighbor = time.time()
+    #Retorna uma tupla dos IDs das linhas selecionadas
     t = tuple([int(i) for i in nearestIds])
+    #Calcula a media para os IDs selecionados
     cursor.execute("SELECT AVG(z) FROM point_cloud WHERE gid in %s" % (t,))
+    #Transforma o valor em float
     float([str(i).split("'")[1] for i in cursor][0])
  
 print float([str(i).split("'")[1] for i in cursor][0])
